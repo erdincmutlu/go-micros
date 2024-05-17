@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -22,11 +23,24 @@ type Config struct {
 
 func main() {
 	// connect to mongo
-	mongoClient, err := connectToMongo(context.Background())
+	ctx := context.Background()
+	mongoClient, err := connectToMongo(ctx)
 	if err != nil {
 		log.Panic(err)
 	}
 	client = mongoClient
+
+	// create a context in order to disconnect
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+
+	// close connection
+	defer func() {
+		err := client.Disconnect(ctx)
+		if err != nil {
+			panic(err)
+		}
+	}()
 }
 
 func connectToMongo(ctx context.Context) (*mongo.Client, error) {
