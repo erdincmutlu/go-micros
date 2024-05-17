@@ -51,12 +51,13 @@ func main() {
 	}
 
 	// start web server
-	go app.serve()
+	log.Println("Starting service on port", webPort)
+	app.serve()
 }
 
 func (app *Config) serve() {
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", webPort),
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
@@ -80,6 +81,8 @@ func connectToMongo(ctx context.Context) (*mongo.Client, error) {
 		log.Println("Error connecting: ", err.Error())
 		return nil, err
 	}
+
+	log.Println("Connected to mongo!")
 
 	return c, nil
 }
