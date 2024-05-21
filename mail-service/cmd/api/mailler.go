@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"log"
 	"text/template"
 	"time"
 
@@ -67,6 +68,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 
 	smtpClient, err := server.Connect()
 	if err != nil {
+		log.Println("server.Connect error: ", err.Error())
 		return err
 	}
 
@@ -86,6 +88,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 
 	err = email.Send(smtpClient)
 	if err != nil {
+		log.Println("email.Send error: ", err.Error())
 		return err
 	}
 
@@ -95,8 +98,9 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 	templateToRender := "./templates/mail.html.gohtml"
 
-	t, err := template.New("email-html").Parse(templateToRender)
+	t, err := template.New("email-html").ParseFiles(templateToRender)
 	if err != nil {
+		log.Println("buildHTMLMessage ParseFiles error:", err.Error())
 		return "", err
 	}
 
@@ -104,6 +108,7 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 
 	err = t.ExecuteTemplate(&tpl, "body", msg.DataMap)
 	if err != nil {
+		log.Println("buildHTMLMessage ExecuteTemplate error:", err.Error())
 		return "", err
 	}
 
@@ -119,8 +124,9 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
 	templateToRender := "./templates/mail.plain.gohtml"
 
-	t, err := template.New("email-plain").Parse(templateToRender)
+	t, err := template.New("email-plain").ParseFiles(templateToRender)
 	if err != nil {
+		log.Println("buildPlainTextMessage ParseFiles error:", err.Error())
 		return "", err
 	}
 
@@ -128,6 +134,7 @@ func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
 
 	err = t.ExecuteTemplate(&tpl, "body", msg.DataMap)
 	if err != nil {
+		log.Println("buildPlainTextMessage ExecuteTemplate error:", err.Error())
 		return "", err
 	}
 
