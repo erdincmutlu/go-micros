@@ -39,7 +39,7 @@ func (consumer *Consumer) setup() error {
 
 type Payload struct {
 	Name string `json:"name"`
-	Data []byte `json:"data"`
+	Data string `json:"data"`
 }
 
 func (consumer *Consumer) Listen(topics []string) error {
