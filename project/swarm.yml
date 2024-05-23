@@ -1,6 +1,12 @@
 version: '3'
 
 services:
+  front-end:
+    image: erdincmutlu/front-end:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+
   broker-service:
     image: erdincmutlu/broker-service:1.0.1
     deploy:
