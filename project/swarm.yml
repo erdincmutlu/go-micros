@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  caddy:
+    image: erdincmutlu/micro-caddy:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
   front-end:
     image: erdincmutlu/front-end:1.0.0
     deploy:
@@ -90,3 +102,6 @@ services:
 volumes:
   postgres:
   mongodata:
+  caddy_data:
+    external: true
+  caddy_config:
